@@ -13,8 +13,8 @@ const SplashScreen = () => {
             <View style={styles.wrapper}>
                 <Text style={styles.header}>Subscription Manager</Text>
                 <Image source={image} style={styles.image} />
+                <FAB style={styles.fab} label='Get Started' onPress={() => navigation.navigate('Main')} />
             </View>
-            <FAB style={styles.fab} label='Skip' onPress={() => navigation.navigate('Main')} />
         </View>
     );
 }
@@ -36,10 +36,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#263238',
     },
     fab: {
-        position: 'absolute',
         margin: 16,
-        right: 0,
-        bottom: 0,
         backgroundColor: '#263238'
     },
     image: {

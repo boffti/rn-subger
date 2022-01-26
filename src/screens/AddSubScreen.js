@@ -9,19 +9,35 @@ import { Context as SubContext } from '../context/SubContext';
 
 const options = ["Day", "Month", "Week", "Year"];
 
+const convertPrice = (price, period, unit) => {
+    price = parseFloat(price);
+    period = parseInt(period);
+    switch(unit) {
+        case "Day":
+            pricePerDay = price / period;
+            return { priceDay: pricePerDay.toFixed(2), priceMonth: (pricePerDay * 30).toFixed(2), priceWeek: (pricePerDay * 7).toFixed(2), priceYear: (pricePerDay * 365).toFixed(2) };
+        case "Month":
+            pricePerMonth = price / period;
+            return { priceDay: (pricePerMonth / 30).toFixed(2), priceMonth: pricePerMonth.toFixed(2), priceWeek: (pricePerMonth / 4).toFixed(2), priceYear: (pricePerMonth * 12).toFixed(2) };
+        case "Week":
+            pricePerWeek = price / period;
+            return { priceDay: (pricePerWeek / 7).toFixed(2), priceMonth: (pricePerWeek * 4).toFixed(2), priceWeek: pricePerWeek.toFixed(2), priceYear: (pricePerWeek * 52).toFixed(2) };
+        case "Year":
+            pricePerYear = price / period;
+            return { priceDay: (pricePerYear / 365).toFixed(2), priceMonth: (pricePerYear / 12).toFixed(2), priceWeek: (pricePerYear / 52).toFixed(2), priceYear: pricePerYear.toFixed(2) };
+        default:
+            return { priceDay: price.toFixed(2), priceMonth: (price * 30).toFixed(2), priceWeek: (price * 7).toFixed(2), priceYear: (price * 365).toFixed(2) };
+    }
+}
+
+const submitForm = (data, navigation, addSub) => {
+    const prices = convertPrice(data.price, data.billPeriod, data.billUnit);
+    addSub({ ...data, prices }, () => navigation.navigate('Main'))
+}
+
 const AddSubScreen = () => {
     const { state, addSub } = useContext(SubContext);
-    const [data, setData] = useState({
-        name: '',
-        price: '',
-        desc: '',
-        billPeriod: '',
-        billUnit: '',
-        firstPayment: '',
-        paymentMethod: '',
-        color: '',
-        note: '',
-    });
+    const [data, setData] = useState({});
 
     const navigation = useNavigation();
 
@@ -130,7 +146,7 @@ const AddSubScreen = () => {
                     style={styles.fab}
                     icon="floppy"
                     label='Save Subscription'
-                    onPress={() => addSub(data, () => navigation.navigate('Main'))}
+                    onPress={() => submitForm(data, navigation, addSub)}
                 />
             </ScrollView>
         </View>

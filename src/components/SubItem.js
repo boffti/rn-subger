@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Context as UnitContext } from '../context/UnitContext';
 
 // const hexToRgb = (hex) => {
 //     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -19,10 +20,13 @@ import { useNavigation } from '@react-navigation/native';
 //         : null;
 // };
 
-const SubItem = ({ id, title, price, bgColor, sub }) => {
+const SubItem = ({ id, title, prices, bgColor, sub }) => {
+    const { state: unitState, getUnit } = useContext(UnitContext);
     const [cardBg, setBgColor] = useState('#fff');
     const [textColor, setTextColor] = useState('#000');
     const navigation = useNavigation();
+    const [price, setPrice] = useState('0');
+    const [unit, setUnit] = useState('month');
     useEffect(() => {
         setBgColor(bgColor);
         // let { r, g, b } = hexToRgb(cardBg);
@@ -41,20 +45,41 @@ const SubItem = ({ id, title, price, bgColor, sub }) => {
         // setTextColor(`rgb(${ir}, ${ig}, ${ib})`);
     }, [bgColor]);
 
+    useEffect(() => {
+        switch (unitState) {
+            case '/mo':
+                setPrice(prices.priceMonth);
+                setUnit('month');
+                break;
+            case '/yr':
+                setPrice(prices.priceYear);
+                setUnit('year');
+                break;
+            case '/day':
+                setPrice(prices.priceDay);
+                setUnit('day');
+                break;
+            case '/wk':
+                setPrice(prices.priceWeek);
+                setUnit('week');
+                break;
+        }
+    }, [unitState])
+
     return (
         <TouchableOpacity 
         style={{ ...styles.card, backgroundColor: cardBg }} 
         onPress={() => navigation.navigate('Detail', { id })}>
-            <View>
+            <View style={styles.cardTitleWrapper}>
                 <Text style={{ ...styles.cardTitle, color: textColor  }}>{title}</Text>
-                <Text style={{ ...styles.cardSub, color: textColor  }}>{sub}</Text>
+                { sub != '' ? <Text style={{ ...styles.cardSubTitle, color: textColor }}>{sub}</Text> : null }
             </View>
             <View style={styles.cardPriceWrapper}>
                 <Text style={{ ...styles.cardPrice, color: textColor  }}>{
                     price.indexOf(".") !==-1 ? '$' + price : '$' + price + '.00'
                     // price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }</Text>
-                <Text style={{ ...styles.cardUnit, color: textColor  }}>per month</Text>
+                <Text style={{ ...styles.cardUnit, color: textColor  }}>per {unit}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -84,10 +109,17 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '100',
     },
+    cardTitleWrapper: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+    },  
     cardPriceWrapper: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        alignItems: 'flex-end',
     },
     cardPrice: {
         fontSize: 18,

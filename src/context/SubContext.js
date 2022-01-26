@@ -1,26 +1,20 @@
 import React from 'react'
-import { AppState } from 'react-native';
+import { v4 as uuid } from 'uuid';
 import createDataContext from './createDataContext';
 // import jsonServer from '../api/jsonServer';
+import { data } from '../../data.js';
 
 const SubContext = React.createContext();
-const INITIAL_STATE = [
-    { id: '1', name: 'Netflix', price: '20', color: '#EF5350', desc: 'This is the description',  billPeriod: '1', billUnit: 'Month', firstPayment: '20', paymentMethod: 'Credit Card', note: 'This is the note' },
-    { id: '2', name: 'Spotify', price: '5', color: '#66BB6A', desc: 'This is the description', billPeriod: '1', billUnit: 'Month', firstPayment: '20', paymentMethod: 'Credit Card', note: 'This is the note' },
-    { id: '3', name: 'Amazon', price: '10', color: '#FFCA28', desc: 'This is the description', billPeriod: '1', billUnit: 'Month', firstPayment: '20', paymentMethod: 'Credit Card', note: 'This is the note' },
-    { id: '4', name: 'Google', price: '25', color: '#9FA8DA', desc: 'This is the description',  billPeriod: '1', billUnit: 'Month', firstPayment: '20', paymentMethod: 'Credit Card', note: 'This is the note' },
-    { id: '5', name: 'Tinder', price: '50', color: '#F48FB1', desc: 'This is the description', billPeriod: '1', billUnit: 'Month', firstPayment: '20', paymentMethod: 'Credit Card', note: 'This is the note' },
-];
+const INITIAL_STATE = data;
 
 const subReducer = (state, action) => {
     switch (action.type) {
         case 'getSubs':
             return state;
         case 'addSub':
-            id = (parseInt(state[state.length - 1].id) + 1).toString();
-            new_state= [...state, { ...action.payload, id }];
-            console.log(new_state);
-            return new_state;
+            id = uuid();
+            state = [...state, { ...action.payload, id }];
+            return state;
         case 'deleteSub':
             return state.filter(blog => blog.id !== action.payload);
         case 'editSub':

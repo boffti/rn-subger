@@ -33,7 +33,7 @@ const HomeScreen = () => {
                         <SubItem
                             id={item.id}
                             title={item.name}
-                            price={item.price}
+                            prices={item.prices}
                             bgColor={item.color}
                             sub={item.desc} />
                     )}
