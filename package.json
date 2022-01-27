@@ -10,6 +10,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^5.1.0",
     "@react-native-firebase/app": "^14.2.4",
     "@react-native-google-signin/google-signin": "^7.0.4",
     "@react-native-picker/picker": "^2.2.1",

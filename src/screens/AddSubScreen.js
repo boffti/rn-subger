@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, StatusBar, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import AppBar from '../components/AppBar';
 import { Picker } from 'react-native'
@@ -6,40 +6,78 @@ import { FAB } from 'react-native-paper';
 import ColorPalette from 'react-native-color-palette'
 import { useNavigation } from '@react-navigation/native';
 import { Context as SubContext } from '../context/SubContext';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const options = ["Day", "Month", "Week", "Year"];
 
 const convertPrice = (price, period, unit) => {
     price = parseFloat(price);
     period = parseInt(period);
-    switch(unit) {
+    console.log(price, period, unit);
+    switch (unit) {
         case "Day":
-            pricePerDay = price / period;
+            const pricePerDay = price / period;
             return { priceDay: pricePerDay.toFixed(2), priceMonth: (pricePerDay * 30).toFixed(2), priceWeek: (pricePerDay * 7).toFixed(2), priceYear: (pricePerDay * 365).toFixed(2) };
         case "Month":
-            pricePerMonth = price / period;
+            const pricePerMonth = price / period;
             return { priceDay: (pricePerMonth / 30).toFixed(2), priceMonth: pricePerMonth.toFixed(2), priceWeek: (pricePerMonth / 4).toFixed(2), priceYear: (pricePerMonth * 12).toFixed(2) };
         case "Week":
-            pricePerWeek = price / period;
+            const pricePerWeek = price / period;
             return { priceDay: (pricePerWeek / 7).toFixed(2), priceMonth: (pricePerWeek * 4).toFixed(2), priceWeek: pricePerWeek.toFixed(2), priceYear: (pricePerWeek * 52).toFixed(2) };
         case "Year":
-            pricePerYear = price / period;
+            const pricePerYear = price / period;
             return { priceDay: (pricePerYear / 365).toFixed(2), priceMonth: (pricePerYear / 12).toFixed(2), priceWeek: (pricePerYear / 52).toFixed(2), priceYear: pricePerYear.toFixed(2) };
         default:
             return { priceDay: price.toFixed(2), priceMonth: (price * 30).toFixed(2), priceWeek: (price * 7).toFixed(2), priceYear: (price * 365).toFixed(2) };
     }
 }
 
+
+
 const submitForm = (data, navigation, addSub) => {
+    console.log(data);
     const prices = convertPrice(data.price, data.billPeriod, data.billUnit);
     addSub({ ...data, prices }, () => navigation.navigate('Main'))
 }
 
 const AddSubScreen = () => {
     const { state, addSub } = useContext(SubContext);
-    const [data, setData] = useState({});
+    const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('date');
+    const [showDate, setShowDate] = useState(false);
+    const [data, setData] = useState({
+        billPeriod: "1",
+        billUnit: "Month",
+        color: "#FFFFFF",
+        desc: "",
+        firstPayment: date,
+        name: "",
+        note: "",
+        paymentMethod: "",
+        price: "",
+    });
+
+    const onDateChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShowDate(Platform.OS === 'ios');
+        setDate(currentDate);
+        setData({ ...data, firstPayment: date.toDateString() });
+    };
+
+    const showDatepicker = () => {
+        showMode('date');
+    };
+
+    const showMode = (currentMode) => {
+        setShowDate(true);
+        setMode(currentMode);
+    };
 
     const navigation = useNavigation();
+
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
 
     return (
         <View style={styles.container}>
@@ -107,8 +145,22 @@ const AddSubScreen = () => {
                     <TextInput
                         style={styles.subInput}
                         placeholder="e.g  Today"
-                        value={data.firstPayment}
-                        onChangeText={(val) => setData({ ...data, firstPayment: val })} />
+                        showSoftInputOnFocus={false}
+                        value={date.toDateString()}
+                        onChangeText={(val) => setData({ ...data, firstPayment: val })}
+                        onFocus={showDatepicker}
+                        onPressIn={showDatepicker}/>
+                    {showDate && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={date}
+                            mode={mode}
+                            is24Hour={true}
+                            display="default"
+                            onChange={onDateChange}
+                        />
+                    )}
+
                 </View>
                 <View style={styles.subWrapper}>
                     <Text style={styles.subTitle}>Payment Method</Text>
@@ -131,7 +183,7 @@ const AddSubScreen = () => {
                         onChange={color => setData({ ...data, color })}
                         value={data.color}
                         title=""
-                        colors={['#EF5350', '#66BB6A', '#FFCA28', '#90CAF9', '#F48FB1', '#FFFFFF']}
+                        colors={['#EF5350', '#ff8b1f', '#66BB6A', '#FFCA28', '#90CAF9', '#F48FB1', '#FFFFFF']}
                     />
                 </View>
                 <View style={styles.subWrapper}>

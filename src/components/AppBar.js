@@ -17,7 +17,7 @@ const AppBar = ({ title, showStats = true }) => {
                 state.forEach(item => {
                     total += parseFloat(item.prices.priceYear);
                 });
-                setStats(total);
+                setStats(total.toFixed(2));
                 break;
             case '/yr':
                 setUnit('/day');
@@ -41,19 +41,20 @@ const AppBar = ({ title, showStats = true }) => {
                 state.forEach(item => {
                     total += parseFloat(item.prices.priceMonth);
                 });
-                setStats(total);
+                setStats(total.toFixed(2));
                 break;
         }
     };
 
     useEffect(() => {
         getSubs();
+        getUnit();
         var total = 0;
         state.forEach(item => {
             total += parseFloat(item.prices.priceMonth);
         });
         // const total = state.map(item => item.price).reduce((acc, cur) => acc + cur.price, 0);
-        setStats(total);
+        setStats(total.toFixed(2));
     }, [state]);
 
     return (

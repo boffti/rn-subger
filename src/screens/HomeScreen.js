@@ -44,7 +44,7 @@ const HomeScreen = () => {
                         style={styles.emptyImage}
                         resizeMode="contain"
                         resizeMethod="resize" />
-                    <Text style={{ color:'#263238' }}>Nothing to show</Text>
+                    <Text style={{ color: '#263238' }}>Nothing to show</Text>
                 </View>
             )}
             <TouchableOpacity style={styles.fab} onPress={() => console.log('settings')}>
