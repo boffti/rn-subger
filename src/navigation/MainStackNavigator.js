@@ -6,6 +6,7 @@ import HomeScreen from '../screens/HomeScreen';
 import AddSubScreen from '../screens/AddSubScreen';
 import DetailScreen from '../screens/DetailScreen';
 import SplashScreen from '../screens/SplashScreen';
+import LoginStackNavigator from './LoginStackNavigator';
 
 const Stack = createStackNavigator()
 
@@ -25,6 +26,10 @@ const MainStackNavigator = () => {
             <Stack.Screen
                 name="Splash"
                 component={SplashScreen}
+                options={{ headerShown: false }} />
+            <Stack.Screen
+                name="LoginStack"
+                component={LoginStackNavigator}
                 options={{ headerShown: false }} />
             <Stack.Screen
                 name="Main"

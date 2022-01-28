@@ -47,7 +47,7 @@ const HomeScreen = () => {
                     <Text style={{ color: '#263238' }}>Nothing to show</Text>
                 </View>
             )}
-            <TouchableOpacity style={styles.fab} onPress={() => console.log('settings')}>
+            <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('LoginStack')}>
                 <Ionicons style={{ color: '#263238' }} name="options" size={30} />
             </TouchableOpacity>
             <FAB
